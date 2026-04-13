@@ -54,38 +54,39 @@ export default function ProductsClient() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Products</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Products</h1>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
+          className="bg-amber-600 text-white px-3 py-2 sm:px-4 rounded-lg hover:bg-amber-700 transition text-sm font-medium"
         >
-          {showForm ? "Cancel" : "+ Add Product"}
+          {showForm ? "Cancel" : "+ Add"}
         </button>
       </div>
 
+      {/* Add Product Form */}
       {showForm && (
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl p-6 shadow-sm mb-8 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="bg-white rounded-xl p-4 sm:p-6 shadow-sm mb-6 space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
-              <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" />
+              <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
-              <select required value={form.categoryId} onChange={(e) => setForm({ ...form, categoryId: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
-                <option value="">Select category</option>
+              <select required value={form.categoryId} onChange={(e) => setForm({ ...form, categoryId: e.target.value })} className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm">
+                <option value="">Select</option>
                 {categories.map((c) => (<option key={c.id} value={c.id}>{c.name}</option>))}
               </select>
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" rows={2} />
+            <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm" rows={2} />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-            <input value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="https://..." />
+            <input value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm" placeholder="https://..." />
           </div>
           <div className="flex gap-4">
             <label className="flex items-center gap-2">
@@ -98,64 +99,78 @@ export default function ProductsClient() {
             </label>
           </div>
 
-          {/* Plans with dual pricing */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Pricing Plans</label>
             {form.plans.map((plan, i) => (
-              <div key={i} className="flex gap-2 mb-2 flex-wrap sm:flex-nowrap">
+              <div key={i} className="grid grid-cols-3 gap-2 mb-2">
                 <input
                   placeholder="e.g. 1 Month"
                   value={plan.label}
-                  onChange={(e) => {
-                    const plans = [...form.plans];
-                    plans[i] = { ...plans[i], label: e.target.value };
-                    setForm({ ...form, plans });
-                  }}
-                  className="flex-1 min-w-[120px] px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                  onChange={(e) => { const plans = [...form.plans]; plans[i] = { ...plans[i], label: e.target.value }; setForm({ ...form, plans }); }}
+                  className="col-span-3 sm:col-span-1 px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm"
                 />
                 <input
-                  type="number"
-                  step="0.01"
-                  placeholder="USD"
+                  type="number" step="0.01" placeholder="USD"
                   value={plan.price || ""}
-                  onChange={(e) => {
-                    const plans = [...form.plans];
-                    plans[i] = { ...plans[i], price: parseFloat(e.target.value) || 0 };
-                    setForm({ ...form, plans });
-                  }}
-                  className="w-28 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                  onChange={(e) => { const plans = [...form.plans]; plans[i] = { ...plans[i], price: parseFloat(e.target.value) || 0 }; setForm({ ...form, plans }); }}
+                  className="px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm"
                 />
-                <input
-                  type="number"
-                  step="1"
-                  placeholder="NGN"
-                  value={plan.priceNgn || ""}
-                  onChange={(e) => {
-                    const plans = [...form.plans];
-                    plans[i] = { ...plans[i], priceNgn: parseFloat(e.target.value) || 0 };
-                    setForm({ ...form, plans });
-                  }}
-                  className="w-28 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                />
-                {form.plans.length > 1 && (
-                  <button type="button" onClick={() => setForm({ ...form, plans: form.plans.filter((_, j) => j !== i) })} className="text-red-500 hover:text-red-700 px-2">×</button>
-                )}
+                <div className="flex gap-2">
+                  <input
+                    type="number" step="1" placeholder="NGN"
+                    value={plan.priceNgn || ""}
+                    onChange={(e) => { const plans = [...form.plans]; plans[i] = { ...plans[i], priceNgn: parseFloat(e.target.value) || 0 }; setForm({ ...form, plans }); }}
+                    className="flex-1 px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm"
+                  />
+                  {form.plans.length > 1 && (
+                    <button type="button" onClick={() => setForm({ ...form, plans: form.plans.filter((_, j) => j !== i) })} className="text-red-500 px-2 text-lg">×</button>
+                  )}
+                </div>
               </div>
             ))}
-            <p className="text-xs text-gray-400 mb-2">Set both USD and NGN (₦) prices for each plan</p>
-            <button type="button" onClick={() => setForm({ ...form, plans: [...form.plans, { label: "", price: 0, priceNgn: 0 }] })} className="text-sm text-indigo-600 hover:text-indigo-700">
+            <button type="button" onClick={() => setForm({ ...form, plans: [...form.plans, { label: "", price: 0, priceNgn: 0 }] })} className="text-sm text-amber-600 hover:text-amber-700 font-medium">
               + Add Plan
             </button>
           </div>
 
-          <button type="submit" className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition">
+          <button type="submit" className="w-full sm:w-auto bg-amber-600 text-white px-6 py-2.5 rounded-lg hover:bg-amber-700 transition text-sm font-medium">
             Create Product
           </button>
         </form>
       )}
 
-      {/* Product Table */}
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+      {/* Product cards (mobile) / table (desktop) */}
+      <div className="space-y-3 lg:hidden">
+        {products.map((product) => (
+          <div key={product.id} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+            <div className="flex justify-between items-start mb-2">
+              <div>
+                <h3 className="font-semibold text-gray-900 text-sm">{product.name}</h3>
+                <p className="text-xs text-gray-500">{product.category.name}</p>
+              </div>
+              <span className={`px-2 py-0.5 text-[10px] rounded-full font-medium ${product.inStock ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                {product.inStock ? "In Stock" : "Out"}
+              </span>
+            </div>
+            {product.plans.length > 0 && (
+              <div className="text-xs text-gray-500 mb-3">
+                ${product.plans[0].price.toFixed(2)} / ₦{product.plans[0].priceNgn.toLocaleString()}
+                {product.featured && <span className="ml-2 text-amber-600 font-medium">Featured</span>}
+              </div>
+            )}
+            <div className="flex gap-3 border-t border-gray-100 pt-3">
+              <Link href={`/admin/products/${product.id}`} className="text-amber-600 text-sm font-medium">Edit</Link>
+              <button onClick={() => handleDelete(product.id)} className="text-red-500 text-sm font-medium">Delete</button>
+            </div>
+          </div>
+        ))}
+        {products.length === 0 && (
+          <div className="text-center py-8 text-gray-500 text-sm">No products yet.</div>
+        )}
+      </div>
+
+      {/* Desktop table */}
+      <div className="hidden lg:block bg-white rounded-xl shadow-sm overflow-hidden">
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr>
@@ -171,19 +186,15 @@ export default function ProductsClient() {
             {products.map((product) => (
               <tr key={product.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4">
-                  <div className="font-medium text-gray-900">{product.name}</div>
-                  {product.featured && <span className="text-xs text-indigo-600">Featured</span>}
+                  <div className="font-medium text-gray-900 text-sm">{product.name}</div>
+                  {product.featured && <span className="text-xs text-amber-600">Featured</span>}
                 </td>
-                <td className="px-6 py-4 text-gray-500">{product.category.name}</td>
-                <td className="px-6 py-4 text-gray-500">
-                  {product.plans.length > 0
-                    ? `$${product.plans[0].price.toFixed(2)}${product.plans.length > 1 ? ` - $${product.plans[product.plans.length - 1].price.toFixed(2)}` : ""}`
-                    : "—"}
+                <td className="px-6 py-4 text-gray-500 text-sm">{product.category.name}</td>
+                <td className="px-6 py-4 text-gray-500 text-sm">
+                  {product.plans.length > 0 ? `$${product.plans[0].price.toFixed(2)}${product.plans.length > 1 ? ` - $${product.plans[product.plans.length - 1].price.toFixed(2)}` : ""}` : "—"}
                 </td>
-                <td className="px-6 py-4 text-gray-500">
-                  {product.plans.length > 0
-                    ? `₦${product.plans[0].priceNgn.toLocaleString()}${product.plans.length > 1 ? ` - ₦${product.plans[product.plans.length - 1].priceNgn.toLocaleString()}` : ""}`
-                    : "—"}
+                <td className="px-6 py-4 text-gray-500 text-sm">
+                  {product.plans.length > 0 ? `₦${product.plans[0].priceNgn.toLocaleString()}${product.plans.length > 1 ? ` - ₦${product.plans[product.plans.length - 1].priceNgn.toLocaleString()}` : ""}` : "—"}
                 </td>
                 <td className="px-6 py-4">
                   <span className={`inline-flex px-2 py-1 text-xs rounded-full ${product.inStock ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
@@ -191,14 +202,11 @@ export default function ProductsClient() {
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right space-x-2">
-                  <Link href={`/admin/products/${product.id}`} className="text-indigo-600 hover:text-indigo-700 text-sm">Edit</Link>
+                  <Link href={`/admin/products/${product.id}`} className="text-amber-600 hover:text-amber-700 text-sm">Edit</Link>
                   <button onClick={() => handleDelete(product.id)} className="text-red-500 hover:text-red-700 text-sm">Delete</button>
                 </td>
               </tr>
             ))}
-            {products.length === 0 && (
-              <tr><td colSpan={6} className="px-6 py-8 text-center text-gray-500">No products yet.</td></tr>
-            )}
           </tbody>
         </table>
       </div>

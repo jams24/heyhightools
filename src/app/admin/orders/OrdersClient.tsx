@@ -51,16 +51,16 @@ export default function OrdersClient() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-8">Orders</h1>
+      <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6">Orders</h1>
 
-      {/* Filters */}
-      <div className="flex gap-2 mb-6">
+      {/* Filters — scrollable on mobile */}
+      <div className="flex gap-2 mb-6 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
         {["", "pending", "paid", "delivered", "expired", "failed"].map((s) => (
           <button
             key={s}
             onClick={() => setFilter(s)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
-              filter === s ? "bg-indigo-600 text-white" : "bg-white text-gray-600 border border-gray-300 hover:bg-gray-50"
+            className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+              filter === s ? "bg-amber-600 text-white" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
             }`}
           >
             {s || "All"}
@@ -69,91 +69,76 @@ export default function OrdersClient() {
       </div>
 
       {/* Orders */}
-      <div className="space-y-4">
+      <div className="space-y-3">
         {orders.map((order) => (
-          <div key={order.id} className="bg-white rounded-xl shadow-sm overflow-hidden">
+          <div key={order.id} className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
             <div
-              className="flex items-center justify-between px-6 py-4 cursor-pointer hover:bg-gray-50"
+              className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-50 active:bg-gray-100"
               onClick={() => setExpandedId(expandedId === order.id ? null : order.id)}
             >
-              <div className="flex items-center gap-4">
-                <span className={`px-2 py-1 text-xs rounded-full font-medium ${statusColors[order.status] || "bg-gray-100"}`}>
+              <div className="flex items-center gap-3 min-w-0">
+                <span className={`shrink-0 px-2 py-0.5 text-[10px] rounded-full font-medium ${statusColors[order.status] || "bg-gray-100"}`}>
                   {order.status}
                 </span>
-                <div>
-                  <p className="font-medium text-gray-900">{order.email}</p>
-                  <p className="text-xs text-gray-500">{new Date(order.createdAt).toLocaleString()}</p>
+                <div className="min-w-0">
+                  <p className="font-medium text-gray-900 text-sm truncate">{order.email}</p>
+                  <p className="text-[11px] text-gray-400">{new Date(order.createdAt).toLocaleDateString()}</p>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="font-bold text-gray-900">${order.total.toFixed(2)}</p>
-                <p className="text-xs text-gray-500">{order.items.length} item(s)</p>
+              <div className="text-right shrink-0 ml-3">
+                <p className="font-bold text-gray-900 text-sm">${order.total.toFixed(2)}</p>
+                <p className="text-[11px] text-gray-400">{order.items.length} item{order.items.length !== 1 ? "s" : ""}</p>
               </div>
             </div>
 
             {expandedId === order.id && (
-              <div className="border-t border-gray-200 px-6 py-4 bg-gray-50">
-                <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+              <div className="border-t border-gray-100 px-4 py-3 bg-gray-50 space-y-3">
+                {/* Order details */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                   <div>
-                    <span className="text-gray-500">Order ID:</span>
-                    <span className="ml-2 font-mono text-xs">{order.id}</span>
+                    <span className="text-gray-400">Order: </span>
+                    <span className="font-mono text-[10px] text-gray-600 break-all">{order.id}</span>
                   </div>
                   {order.whatsapp && (
                     <div>
-                      <span className="text-gray-500">WhatsApp:</span>
-                      <span className="ml-2">{order.whatsapp}</span>
+                      <span className="text-gray-400">WhatsApp: </span>
+                      <span className="text-gray-600">{order.whatsapp}</span>
                     </div>
                   )}
                   {order.paymentId && (
-                    <div>
-                      <span className="text-gray-500">Payment ID:</span>
-                      <span className="ml-2 font-mono text-xs">{order.paymentId}</span>
+                    <div className="sm:col-span-2">
+                      <span className="text-gray-400">Payment: </span>
+                      <span className="font-mono text-[10px] text-gray-600 break-all">{order.paymentId}</span>
                     </div>
                   )}
                 </div>
 
-                <table className="w-full text-sm mb-4">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left py-2">Product</th>
-                      <th className="text-left py-2">Plan</th>
-                      <th className="text-right py-2">Price</th>
-                      <th className="text-right py-2">Qty</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {order.items.map((item, i) => (
-                      <tr key={i} className="border-b border-gray-100">
-                        <td className="py-2">{item.productName}</td>
-                        <td className="py-2">{item.planLabel}</td>
-                        <td className="py-2 text-right">${item.price.toFixed(2)}</td>
-                        <td className="py-2 text-right">{item.quantity}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                {/* Items */}
+                <div className="space-y-1.5">
+                  {order.items.map((item, i) => (
+                    <div key={i} className="flex justify-between text-xs bg-white rounded-lg px-3 py-2">
+                      <div>
+                        <span className="text-gray-900 font-medium">{item.productName}</span>
+                        <span className="text-gray-400 ml-1">({item.planLabel})</span>
+                      </div>
+                      <span className="text-gray-600 shrink-0">${item.price.toFixed(2)} {item.quantity > 1 ? `x${item.quantity}` : ""}</span>
+                    </div>
+                  ))}
+                </div>
 
-                <div className="flex gap-2">
+                {/* Action buttons */}
+                <div className="flex flex-wrap gap-2 pt-1">
                   {order.status === "paid" && (
-                    <button
-                      onClick={() => updateStatus(order.id, "delivered")}
-                      className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-blue-700"
-                    >
+                    <button onClick={() => updateStatus(order.id, "delivered")} className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-blue-700">
                       Mark Delivered
                     </button>
                   )}
                   {order.status === "pending" && (
                     <>
-                      <button
-                        onClick={() => updateStatus(order.id, "paid")}
-                        className="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-green-700"
-                      >
+                      <button onClick={() => updateStatus(order.id, "paid")} className="bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-green-700">
                         Mark Paid
                       </button>
-                      <button
-                        onClick={() => updateStatus(order.id, "failed")}
-                        className="bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-red-700"
-                      >
+                      <button onClick={() => updateStatus(order.id, "failed")} className="bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-red-700">
                         Mark Failed
                       </button>
                     </>
@@ -164,7 +149,7 @@ export default function OrdersClient() {
           </div>
         ))}
         {orders.length === 0 && (
-          <div className="text-center py-8 text-gray-500">No orders found.</div>
+          <div className="text-center py-12 text-gray-400 text-sm">No orders found.</div>
         )}
       </div>
     </div>

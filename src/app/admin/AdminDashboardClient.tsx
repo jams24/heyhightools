@@ -31,23 +31,21 @@ export default function AdminDashboardClient() {
   }, []);
 
   const statCards = [
-    { label: "Total Products", value: stats?.totalProducts ?? "...", color: "bg-blue-500" },
-    { label: "Total Orders", value: stats?.totalOrders ?? "...", color: "bg-green-500" },
-    { label: "Revenue", value: stats ? `$${stats.totalRevenue.toFixed(2)}` : "...", color: "bg-purple-500" },
-    { label: "Pending Orders", value: stats?.pendingOrders ?? "...", color: "bg-orange-500" },
+    { label: "Products", value: stats?.totalProducts ?? "...", color: "bg-blue-500", icon: "📦" },
+    { label: "Orders", value: stats?.totalOrders ?? "...", color: "bg-green-500", icon: "📋" },
+    { label: "Revenue", value: stats ? `$${stats.totalRevenue.toFixed(2)}` : "...", color: "bg-purple-500", icon: "💰" },
+    { label: "Pending", value: stats?.pendingOrders ?? "...", color: "bg-orange-500", icon: "⏳" },
   ];
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-8">Dashboard</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6">Dashboard</h1>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {statCards.map((card) => (
-          <div key={card.label} className="bg-white rounded-xl p-6 shadow-sm">
-            <div className={`w-10 h-10 ${card.color} rounded-lg flex items-center justify-center text-white text-lg font-bold mb-3`}>
-              {String(card.label).charAt(0)}
-            </div>
-            <p className="text-sm text-gray-500">{card.label}</p>
-            <p className="text-2xl font-bold text-gray-900 mt-1">{card.value}</p>
+          <div key={card.label} className="bg-white rounded-xl p-4 sm:p-6 shadow-sm">
+            <div className="text-2xl mb-2">{card.icon}</div>
+            <p className="text-xs text-gray-500">{card.label}</p>
+            <p className="text-lg sm:text-2xl font-bold text-gray-900 mt-0.5">{card.value}</p>
           </div>
         ))}
       </div>
