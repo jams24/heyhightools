@@ -53,74 +53,63 @@ export default function CategoriesClient() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-8">Categories</h1>
+      <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6">Categories</h1>
 
       {/* Create Form */}
-      <form onSubmit={handleCreate} className="flex gap-3 mb-8">
+      <form onSubmit={handleCreate} className="flex gap-2 mb-6">
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="New category name..."
-          className="flex-1 max-w-sm px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+          placeholder="New category..."
+          className="flex-1 px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm"
         />
-        <button type="submit" className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
-          Add Category
+        <button type="submit" className="bg-amber-600 text-white px-4 py-2.5 rounded-lg hover:bg-amber-700 transition text-sm font-medium shrink-0">
+          Add
         </button>
       </form>
 
-      {/* List */}
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Name</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Products</th>
-              <th className="text-right px-6 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {categories.map((cat) => (
-              <tr key={cat.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4">
-                  {editingId === cat.id ? (
-                    <div className="flex gap-2">
-                      <input
-                        value={editName}
-                        onChange={(e) => setEditName(e.target.value)}
-                        className="px-2 py-1 border rounded-lg outline-none"
-                        autoFocus
-                      />
-                      <button onClick={() => handleUpdate(cat.id)} className="text-green-600 text-sm">Save</button>
-                      <button onClick={() => setEditingId(null)} className="text-gray-500 text-sm">Cancel</button>
-                    </div>
-                  ) : (
-                    <span className="font-medium text-gray-900">{cat.name}</span>
-                  )}
-                </td>
-                <td className="px-6 py-4 text-gray-500">{cat._count.products}</td>
-                <td className="px-6 py-4 text-right space-x-2">
+      {/* Category cards */}
+      <div className="space-y-2">
+        {categories.map((cat) => (
+          <div key={cat.id} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+            {editingId === cat.id ? (
+              <div className="flex gap-2">
+                <input
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg outline-none text-sm focus:ring-2 focus:ring-amber-500"
+                  autoFocus
+                />
+                <button onClick={() => handleUpdate(cat.id)} className="bg-green-600 text-white px-3 py-2 rounded-lg text-xs font-medium">Save</button>
+                <button onClick={() => setEditingId(null)} className="bg-gray-200 text-gray-600 px-3 py-2 rounded-lg text-xs font-medium">Cancel</button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold text-gray-900 text-sm">{cat.name}</h3>
+                  <p className="text-xs text-gray-400 mt-0.5">{cat._count.products} product{cat._count.products !== 1 ? "s" : ""}</p>
+                </div>
+                <div className="flex gap-3">
                   <button
                     onClick={() => { setEditingId(cat.id); setEditName(cat.name); }}
-                    className="text-indigo-600 hover:text-indigo-700 text-sm"
+                    className="text-amber-600 text-sm font-medium"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(cat.id)}
-                    className="text-red-500 hover:text-red-700 text-sm"
+                    className="text-red-500 text-sm font-medium"
                   >
                     Delete
                   </button>
-                </td>
-              </tr>
-            ))}
-            {categories.length === 0 && (
-              <tr>
-                <td colSpan={3} className="px-6 py-8 text-center text-gray-500">No categories yet.</td>
-              </tr>
+                </div>
+              </div>
             )}
-          </tbody>
-        </table>
+          </div>
+        ))}
+        {categories.length === 0 && (
+          <div className="text-center py-12 text-gray-400 text-sm">No categories yet.</div>
+        )}
       </div>
     </div>
   );
