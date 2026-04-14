@@ -17,6 +17,7 @@ export default function CategoriesClient() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
 
   const showMessage = (msg: string, type: "error" | "success") => {
     if (type === "error") { setError(msg); setSuccess(""); }
@@ -24,7 +25,15 @@ export default function CategoriesClient() {
     setTimeout(() => { setError(""); setSuccess(""); }, 3000);
   };
 
-  const load = () => fetch("/api/categories").then((r) => r.json()).then(setCategories);
+  const load = () => {
+    setFetching(true);
+    fetch("/api/categories")
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data)) setCategories(data);
+      })
+      .finally(() => setFetching(false));
+  };
   useEffect(() => { load(); }, []);
 
   const handleCreate = async (e: React.FormEvent) => {
@@ -147,7 +156,10 @@ export default function CategoriesClient() {
             )}
           </div>
         ))}
-        {categories.length === 0 && (
+        {fetching && categories.length === 0 && (
+          <div className="text-center py-12 text-gray-400 text-sm">Loading categories...</div>
+        )}
+        {!fetching && categories.length === 0 && (
           <div className="text-center py-12 text-gray-400 text-sm">No categories yet.</div>
         )}
       </div>
