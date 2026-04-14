@@ -11,8 +11,21 @@ export async function PUT(
 
   const { id } = await params;
   const { name, image } = await req.json();
-  const category = await prisma.category.update({ where: { id }, data: { name, image } });
-  return NextResponse.json(category);
+
+  try {
+    const category = await prisma.category.update({ where: { id }, data: { name, image } });
+    return NextResponse.json(category);
+  } catch (error: unknown) {
+    if (
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      (error as { code: string }).code === "P2002"
+    ) {
+      return NextResponse.json({ error: "A category with this name already exists" }, { status: 409 });
+    }
+    return NextResponse.json({ error: "Failed to update category" }, { status: 500 });
+  }
 }
 
 export async function DELETE(
